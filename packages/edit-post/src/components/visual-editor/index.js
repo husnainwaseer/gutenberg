@@ -49,13 +49,19 @@ function MaybeIframe( {
 	styles,
 	assets,
 	style,
+	__unstableResolvedContentStyles,
 } ) {
 	const ref = useMouseMoveTypingReset();
 
 	if ( ! shouldIframe ) {
 		return (
 			<>
-				<EditorStyles styles={ styles } />
+				<EditorStyles
+					styles={ styles }
+					__unstableResolvedContentStyles={
+						__unstableResolvedContentStyles
+					}
+				/>
 				<WritingFlow
 					ref={ contentRef }
 					className="editor-styles-wrapper"
@@ -70,7 +76,14 @@ function MaybeIframe( {
 
 	return (
 		<Iframe
-			head={ <EditorStyles styles={ styles } /> }
+			head={
+				<EditorStyles
+					styles={ styles }
+					__unstableResolvedContentStyles={
+						__unstableResolvedContentStyles
+					}
+				/>
+			}
 			assets={ assets }
 			ref={ ref }
 			contentRef={ contentRef }
@@ -118,15 +131,21 @@ export default function VisualEditor( { styles } ) {
 		( select ) => select( editPostStore ).hasMetaBoxes(),
 		[]
 	);
-	const { themeHasDisabledLayoutStyles, themeSupportsLayout, assets } =
-		useSelect( ( select ) => {
-			const _settings = select( blockEditorStore ).getSettings();
-			return {
-				themeHasDisabledLayoutStyles: _settings.disableLayoutStyles,
-				themeSupportsLayout: _settings.supportsLayout,
-				assets: _settings.__unstableResolvedAssets,
-			};
-		}, [] );
+	const {
+		themeHasDisabledLayoutStyles,
+		themeSupportsLayout,
+		assets,
+		__unstableResolvedContentStyles,
+	} = useSelect( ( select ) => {
+		const _settings = select( blockEditorStore ).getSettings();
+		return {
+			themeHasDisabledLayoutStyles: _settings.disableLayoutStyles,
+			themeSupportsLayout: _settings.supportsLayout,
+			assets: _settings.__unstableResolvedAssets,
+			__unstableResolvedContentStyles:
+				_settings.__unstableResolvedContentStyles,
+		};
+	}, [] );
 	const { clearSelectedBlock } = useDispatch( blockEditorStore );
 	const { setIsEditingTemplate } = useDispatch( editPostStore );
 	const desktopCanvasStyles = {
@@ -243,6 +262,9 @@ export default function VisualEditor( { styles } ) {
 						styles={ styles }
 						assets={ assets }
 						style={ { paddingBottom } }
+						__unstableResolvedContentStyles={
+							__unstableResolvedContentStyles
+						}
 					>
 						{ themeSupportsLayout &&
 							! themeHasDisabledLayoutStyles &&
