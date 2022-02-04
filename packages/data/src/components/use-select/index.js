@@ -191,8 +191,15 @@ export default function useSelect( mapSelect, deps ) {
 		latestRegistry.current = registry;
 		latestMapSelect.current = _mapSelect;
 		latestIsAsync.current = isAsync;
-		latestMapOutput.current = mapOutput;
 		latestMapOutputError.current = undefined;
+	} );
+
+	useIsomorphicLayoutEffect( () => {
+		if ( ! hasMappingFunction ) {
+			return;
+		}
+
+		latestMapOutput.current = mapOutput;
 	}, [ mapOutput ] );
 
 	// React can sometimes clear the `useMemo` cache.
