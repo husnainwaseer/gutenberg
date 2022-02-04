@@ -193,7 +193,7 @@ export default function useSelect( mapSelect, deps ) {
 		latestIsAsync.current = isAsync;
 		latestMapOutput.current = mapOutput;
 		latestMapOutputError.current = undefined;
-	} );
+	}, [ mapOutput ] );
 
 	// React can sometimes clear the `useMemo` cache.
 	// We use the cache-stable `useMemoOne` to avoid
