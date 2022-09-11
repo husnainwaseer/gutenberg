@@ -23,6 +23,9 @@ const notices = onSubKey( 'context' )( ( state = [], action ) => {
 
 		case 'REMOVE_NOTICE':
 			return state.filter( ( { id } ) => id !== action.id );
+
+		case 'REMOVE_ALL_NOTICES':
+			return [];
 	}
 
 	return state;
