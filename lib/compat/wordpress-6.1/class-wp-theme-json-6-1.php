@@ -650,37 +650,21 @@ class WP_Theme_JSON_6_1 extends WP_Theme_JSON_6_0 {
 
 		$stylesheet = '';
 
+		// Get variables.
 		if ( in_array( 'variables', $types, true ) ) {
 			$stylesheet .= $this->get_css_variables( $setting_nodes, $origins );
 		}
 
-		if ( in_array( 'styles', $types, true ) ) {
-			$root_block_key = array_search( static::ROOT_BLOCK_SELECTOR, array_column( $style_nodes, 'selector' ), true );
-
-			if ( false !== $root_block_key ) {
-				$stylesheet .= $this->get_root_layout_rules( static::ROOT_BLOCK_SELECTOR, $style_nodes[ $root_block_key ] );
-			}
-			$stylesheet .= $this->get_block_classes( $style_nodes );
-		} elseif ( in_array( 'base-layout-styles', $types, true ) ) {
-			// Base layout styles are provided as part of `styles`, so only output separately if explicitly requested.
-			// For backwards compatibility, the Columns block is explicitly included, to support a different default gap value.
-			$base_styles_nodes = array(
-				array(
-					'path'     => array( 'styles' ),
-					'selector' => static::ROOT_BLOCK_SELECTOR,
-				),
-				array(
-					'path'     => array( 'styles', 'blocks', 'core/columns' ),
-					'selector' => '.wp-block-columns',
-					'name'     => 'core/columns',
-				),
-			);
-
-			foreach ( $base_styles_nodes as $base_style_node ) {
-				$stylesheet .= $this->get_layout_styles( $base_style_node );
-			}
+		// Get root layout rules.
+		$root_block_key = array_search( static::ROOT_BLOCK_SELECTOR, array_column( $style_nodes, 'selector' ), true );
+		if ( false !== $root_block_key ) {
+			$stylesheet .= $this->get_root_layout_rules( static::ROOT_BLOCK_SELECTOR, $style_nodes[ $root_block_key ] );
 		}
 
+		// Get block rules.
+		$stylesheet .= $this->get_block_classes( $style_nodes );
+
+		// Get presets.
 		if ( in_array( 'presets', $types, true ) ) {
 			$stylesheet .= $this->get_preset_classes( $setting_nodes, $origins );
 		}
