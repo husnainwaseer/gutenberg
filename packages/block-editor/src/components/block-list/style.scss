@@ -117,6 +117,9 @@
 }
 
 .block-editor-block-list__layout .block-editor-block-list__block {
+	// Without this, Safari draws a full-width selection rectangle.
+	position: static;
+
 	// Re-enable text-selection on editable blocks.
 	user-select: text;
 
@@ -130,7 +133,6 @@
 	/**
 	 * Notices
 	 */
-
 	.components-placeholder .components-with-notices-ui {
 		margin: -10px 0 12px 0;
 	}
@@ -167,6 +169,7 @@
 			box-shadow: 0 0 0 var(--wp-admin-border-width-focus) $dark-theme-focus;
 		}
 	}
+
 
 	/**
 	* Block styles and alignments
