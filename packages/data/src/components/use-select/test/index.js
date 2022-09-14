@@ -439,7 +439,7 @@ describe( 'useSelect', () => {
 			registry.registerStore( 'store-2', counterStore );
 			registry.registerStore( 'store-3', counterStore );
 
-			let renderer, childShouldDispatch, setChildShouldDispatch;
+			let childShouldDispatch, setChildShouldDispatch;
 			const selectCount1AndDep = jest.fn();
 
 			class ChildComponent extends Component {
@@ -459,9 +459,8 @@ describe( 'useSelect', () => {
 			}
 
 			const TestComponent = jest.fn( () => {
-				[ childShouldDispatch, setChildShouldDispatch ] = useState(
-					false
-				);
+				[ childShouldDispatch, setChildShouldDispatch ] =
+					useState( false );
 				const state = useSelect(
 					( select ) =>
 						selectCount1AndDep() || {
@@ -472,7 +471,7 @@ describe( 'useSelect', () => {
 
 				return (
 					<>
-						<div data={ state } />
+						<div role="status">count1:{ state.count1 }</div>
 						<ChildComponent
 							childShouldDispatch={ childShouldDispatch }
 						/>
@@ -480,24 +479,20 @@ describe( 'useSelect', () => {
 				);
 			} );
 
-			act( () => {
-				renderer = TestRenderer.create(
-					<RegistryProvider value={ registry }>
-						<TestComponent />
-					</RegistryProvider>
-				);
-			} );
+			const rendered = render(
+				<RegistryProvider value={ registry }>
+					<TestComponent />
+				</RegistryProvider>
+			);
 
 			act( () => {
 				setChildShouldDispatch( true );
 			} );
 
-			const testInstance = renderer.root;
-
 			expect( selectCount1AndDep ).toHaveBeenCalledTimes( 3 );
-			expect( testInstance.findByType( 'div' ).props.data ).toEqual( {
-				count1: 1,
-			} );
+			expect( rendered.getByRole( 'status' ) ).toHaveTextContent(
+				'count1:1'
+			);
 		} );
 
 		it( 'handles registry selectors', () => {
